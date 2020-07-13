@@ -9,10 +9,13 @@ const imagemin     = require('gulp-imagemin');
 const newer        = require('gulp-newer');
 const del          = require('del');
 
+
+// Задача для перезагрузки страниц при изменении
 function browsersync() {
     browserSync.init({
         server: { baseDir: 'app/' },
         notify: false
+//   online: false, // Для работы offline
     })
 }
 
@@ -27,6 +30,8 @@ function scripts() {
     .pipe(browserSync.stream())
 }
 
+// Задача для компиляции scss файлов в css.
+
 function styles() {
     return src('app/scss/main.scss')
     .pipe(sass())
@@ -36,6 +41,8 @@ function styles() {
     .pipe(dest('app/css/'))
     .pipe(browserSync.stream())
 }
+
+// Задача для минимизации images.
 
 function images () {
     return src('app/images/src/**/*')
@@ -52,6 +59,8 @@ function cleandist () {
     return del('dist/**/*', { forse:true})
 }
 
+// Задача для сборки окончательного материала.
+
 function buildcopy () {
     return src([
         'app/css/**/*.min.css',
@@ -62,11 +71,15 @@ function buildcopy () {
     .pipe(dest('dist'));
 }
 
+// Задача для слежения за файлами и выполнения действий с ними
+
 function startwatch() {
     watch(['app/**/*.js', '!app/**/*.min.js'], scripts);
     watch('app/**/*.html').on('change', browserSync.reload)
     watch('app/images/src/**/*', images);
 }
+
+//Таски
 
 exports.browsersync = browsersync;
 exports.scripts     = scripts;
